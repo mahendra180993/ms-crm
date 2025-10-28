@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Client</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      updateDoc,
+      deleteDoc,
+      doc,
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+      // ✅ Firebase Config
+      const firebaseConfig = {
+        apiKey: "AIzaSyA1_fR7Lp-MAQr9LxkHz-gfpXsL1HfuJYM",
+        authDomain: "client-crm-42c99.firebaseapp.com",
+        projectId: "client-crm-42c99",
+        storageBucket: "client-crm-42c99.firebasestorage.app",
+        messagingSenderId: "803857193271",
+        appId: "1:803857193271:web:7cdeaf0178f23e4ce8a2b2",
+        measurementId: "G-WSY8T2LWRB",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const purchasedDate = document.getElementById("purchasedDate");
+      const endDate = document.getElementById("endDate");
+
+      purchasedDate.addEventListener("change", () => {
+        const d = new Date(purchasedDate.value);
+        d.setFullYear(d.getFullYear() + 1);
+        endDate.value = d.toISOString().split("T")[0];
+      });
+
+      document.getElementById("addClientForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const clientData = {
+          name: document.getElementById("name").value,
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value,
+          purchasedDate: purchasedDate.value,
+          endDate: endDate.value,
+          softwareType: document.getElementById("softwareType").value,
+          amount: document.getElementById("amount").value,
+          address: document.getElementById("address").value
+        };
+
+        await addDoc(collection(db, "clients"), clientData);
+        alert("Client added successfully!");
+        window.location.href = "index.html";
+      });
+    });
+  </script>
+
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f9fa; margin: 30px; }
+    form { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin: auto; }
+    h2 { text-align: center; }
+    label { display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 15px; background: #28a745; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #218838; }
+  </style>
+</head>
+<body>
+  <h2>Add Client</h2>
+  <form id="addClientForm">
+    <label>Name</label>
+    <input type="text" id="name" required />
+
+    <label>Username</label>
+    <input type="text" id="username" required />
+
+    <label>Password</label>
+    <input type="text" id="password" required />
+
+    <label>Purchased Date</label>
+    <input type="date" id="purchasedDate" required />
+
+    <label>End Date</label>
+    <input type="date" id="endDate" required />
+
+    <label>Software Type</label>
+    <select id="softwareType" required>
+      <option value="">Select</option>
+      <option>CRM</option>
+      <option>ERP</option>
+      <option>E-commerce</option>
+      <option>Website</option>
+      <option>Custom Software</option>
+    </select>
+
+    <label>Amount (₹)</label>
+    <input type="number" id="amount" required />
+
+    <label>Address</label>
+    <textarea id="address"></textarea>
+
+    <button type="submit">Save Client</button>
+  </form>
+</body>
+</html>
